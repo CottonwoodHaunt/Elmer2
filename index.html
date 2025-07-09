@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ask Elmer</title>
+</head>
+<body>
+  <h1>Talk to Elmer 👻</h1>
+  <textarea id="question" rows="4" cols="50" placeholder="Ask your question..."></textarea><br>
+  <button onclick="askElmer()">Ask Elmer</button>
+  <p><strong>Response:</strong> <span id="response"></span></p>
+
+  <script>
+    async function askElmer() {
+      const question = document.getElementById("question").value;
+      const responseElement = document.getElementById("response");
+      responseElement.textContent = "Elmer is thinking...";
+
+      try {
+        const res = await fetch("/.netlify/functions/elmer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: question })
+        });
+        const data = await res.json();
+        responseElement.textContent = data.reply || data.error || "No response.";
+      } catch (err) {
+        responseElement.textContent = "Something went wrong.";
+      }
+    }
+  </script>
+</body>
+</html>
